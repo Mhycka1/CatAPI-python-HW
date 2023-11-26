@@ -1,0 +1,36 @@
+import requests
+import json
+
+class CatFactsAPI:
+    def __init__(self, url='https://catfact.ninja'):
+        self.url = url
+
+    def get_nth_cat_breed(self, n):
+        
+        endpoint = '/breeds'
+        new_url = f'{self.url}{endpoint}'
+        response = requests.get(new_url)
+
+        # Check if the request was successful (status code 200)
+        if response.status_code == 200:
+          
+            data = json.loads(response.text)
+
+            
+            if 'data' in data and len(data['data']) >= n:
+                nth_breed = data['data'][n - 1]
+                return nth_breed
+            else:
+                return f"Error: Cat breed with index {n} not found."
+
+        else:
+            return f"Error: Failed to fetch cat breeds. Status code: {response.status_code}"
+
+cat_api = CatFactsAPI()
+try:
+    breed_index = int(input("Enter the index of the cat breed you want to search for: "))
+    nth_breed_info = cat_api.get_nth_cat_breed(breed_index)
+    print("Cat Breed Info:")
+    print(nth_breed_info)
+except ValueError:
+    print("Error: Please enter a valid integer.")
